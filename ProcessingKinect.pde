@@ -10,13 +10,18 @@ Thomas Sanchez Lengeling.
 
 import KinectPV2.KJoint;
 import KinectPV2.*;
-import processing.sound.*;
+//import processing.sound.*;
+import ddf.minim.*;
 
 KinectPV2 kinect;
 
-String UIText = "press any key to start";
+String UIText = "click mouse to start";
+String ls = "-"; String rs="-"; String la = "-"; String ra="-";
 
-SoundFile soundfile;
+Minim minim;
+AudioSample sample1;
+AudioSample sample2;
+AudioSample sample3;
 
 float AngleNeck;
 float AngleSpineTop;
@@ -43,7 +48,7 @@ void setup() {
 
   kinect.init();
   
-  soundfile = new SoundFile(this, "vibraphon.aiff");
+  setUpSoundFiles();
   
 }
 
@@ -53,6 +58,10 @@ void draw() {
   image(kinect.getColorImage(), 0, 0, width, height);
   
   text(UIText, 1920 - 200, 50);
+  text(ls, 1920 - 200, 80);
+  text(la, 1920 - 200, 110);
+  text(rs, 1920 - 200, 140);
+  text(ra, 1920 - 200, 170);
 
   ArrayList<KSkeleton> skeletonArray =  kinect.getSkeletonColorMap();
 
@@ -76,6 +85,8 @@ void draw() {
 
   fill(255, 0, 0);
   text(frameRate, 50, 50);
+  
+   beginExercise();
 }
 
 //DRAW BODY
@@ -211,6 +222,10 @@ float showAngle(KJoint[] joints, int jointType1, int jointType2, int jointType3,
   return angle;
 }
 
-void keyPressed(){
-   beginExercise(); 
+void setUpSoundFiles(){
+  
+  minim = new Minim(this);
+  sample1 = minim.loadSample("sample1.mp3");
+  sample2 = minim.loadSample("sample2.mp3");
+  sample3 = minim.loadSample("sample3.mp3");
 }
