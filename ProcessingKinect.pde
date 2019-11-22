@@ -16,6 +16,7 @@ import ddf.minim.*;
 KinectPV2 kinect;
 
 String UIText = "click mouse to start";
+String instructions = "instructions";
 String ls = "-"; String rs="-"; String la = "-"; String ra="-";
 
 Minim minim;
@@ -57,6 +58,7 @@ void draw() {
   
   image(kinect.getColorImage(), 0, 0, width, height);
   
+  text(instructions, 1920-200,20);
   text(UIText, 1920 - 200, 50);
   text(ls, 1920 - 200, 80);
   text(la, 1920 - 200, 110);
