@@ -1,9 +1,19 @@
 
 
-boolean pose1done = false;
-boolean pose2done = false;
+boolean step1done = false;
+boolean step2done = false;
 int step = 1;
+boolean step1spoken = false;
+boolean step2spoken = false;
+
 int voiceSample = 0;
+
+int armsCounter = 0;
+int rightArmCounter = 0;
+int leftArmCounter = 0;
+int legsCounter = 0;
+int leftLegCounter = 0;
+int rightLegCounter = 0;
 
 //pose 1 flag
 int leftElbow;
@@ -19,112 +29,99 @@ int rightKnee;
 //pose 2 flags
 
 
-void beginExercise(){
-  
-  if(!pose1done) { setFlagsPose1(); doPose1();  }
-  else if(pose1done && !pose2done) { doPose2(); }
-  else { exerciseDone();  }
-}
 
-void doPose1(){
+void doPose(){
   
   UIText = "pose 1";
   
-  switch(step){
+  //switch(step){
     
-    case 1:
+  //  case 1:
     
     UIText = "case 1";
     
-    if(leftShoulder !=1 && rightShoulder != 1 && leftElbow != 1 && rightElbow != 1) 
-    {
-       voiceSample = 1;
-       instructions = "raise your hands above yo head";
+    if(step==1 && leftKnee != 1){
+      voiceSample = 1;
+      instructions = "left knee wrong";
+    }
+    
+    else if(step == 1 && rightKnee != 1){
+      voiceSample = 2;
+      instructions = "right knee wrong";
     }
     
     else if(leftShoulder != 1 && rightShoulder != 1){
-      voiceSample = 2;
-      instructions = "both shoulders wrong";
+      voiceSample = 3;
+      instructions = "bring your arms closer to your head, and straighten them upwards so they are pointing to the ceiling";
+      step = 2;
     }
     
     else if(leftShoulder !=1)
     {
-      voiceSample = 3;
-      instructions = "left shoulder wrong";
+      voiceSample = 4;
+      instructions = "bring your left arm closer to your head, and stretch it towards the ceiling";
+      step = 2;
     }
     
     else if(rightShoulder != 1){
-      voiceSample = 4;
-      instructions = "right shoulder wrong";
+      voiceSample = 5;
+      instructions = "bring your right arm closer to your head, and stretch it towards the ceiling";
+      step = 2;
     }
     
     else if(leftElbow !=1 && rightElbow !=1){
-      voiceSample = 5;
-      instructions = "both elbows wrong";
+      voiceSample = 6;
+      instructions = "your elbows are bent. stretch both arms pointing straight towards the ceiling";
+      step = 2;
     }
     
     else if(leftElbow !=1){
-      voiceSample = 6;
-      instructions = "left elbow wrong";
+      voiceSample = 7;
+      instructions = "your left elbow is bent. straighten it so your arm is pointing straight towards the ceiling";
+      step = 2;
     }
     
     else if(rightElbow!=1){
-      voiceSample = 7;
-      instructions = "right elbow wrong";
-    }
-    
-    else if(rightKnee !=1){
       voiceSample = 8;
-      instructions = "right knee wrong";
+      instructions = "your right elbow is bent. straighten it so your arm is pointing straight towards the ceiling";
+      step = 2;
     }
     
-    else if(leftKnee != 1){
-      voiceSample = 9;
-      instructions = "left knee wrong";
-    }
+ 
     
-    else if(spine!=1){
-      voiceSample = 10;
-      instructions = "spine wrong";
-    }    
-    
-    
+    //else if(spine!=1){
+    //  voiceSample = 10;
+    //  instructions = "spine wrong";
+    //}    
     
     else{ 
-      voiceSample = 11;
-      playDoneSound(1);
+      voiceSample = 9;
+      //playDoneSound(1);
       instructions = "all good!";
+      resetPose();
     }
     
-    break;
-    
-    case 2:
-    UIText = "case 2";
-    voiceSample = 2;
-    break;
-  
-  }
-    
-  
+    //case 2:
+    //UIText = "case 2";
+    //voiceSample = 2;
+    //break;
   
 }
-
-void doPose2(){}
 
 void exerciseDone() {}
 
 
 void setFlagsPose1(){
   
-  if(AngleLeftShoulder > 130) leftShoulder = -1;
-  else if(AngleLeftShoulder < 90) leftShoulder = 0;
+  //if(step == 1 && !step1done)
+  
+  if(AngleLeftShoulder > 130  || AngleLeftShoulderWithY > 30) leftShoulder = 0;
   else leftShoulder = 1;
   
   if(AngleLeftElbow < 160) leftElbow = 0;
   else leftElbow = 1;
   
-  if(AngleRightShoulder > 130) rightShoulder = 0;
-  else if(AngleRightShoulder < 90) rightShoulder = -1;
+  if(AngleRightShoulder > 130 || AngleRightShoulderWithY > 30) rightShoulder = 0;
   else rightShoulder = 1;
   
   if(AngleRightElbow < 160) rightElbow = 0;
@@ -139,44 +136,102 @@ void setFlagsPose1(){
   
   if(AngleLeftKnee > 120) leftKnee = -1;
   else leftKnee = 1;
+  ra = String.valueOf(leftKnee);
   
-  if(AngleLeftKnee < 160) rightKnee = -1;
+  if(AngleRightKnee < 130) rightKnee = -1;
   else rightKnee = 1;
-  
-  la = String.valueOf(AngleLeftShoulder);
-  ra = String.valueOf(AngleRightShoulder);
-  ls = String.valueOf(leftShoulder);
-  rs = String.valueOf(rightShoulder);
+
   
 }
 
-void keyPressed(){
+void mouseClicked(){
   
-  if(keyCode == RIGHT){
+  if(step==1 && !step1spoken){
+    step1.trigger();
+    step1spoken = true;
+  }
+  
+  else if(step ==2 && !step2spoken){
+    step2.trigger();
+    step2spoken = true;
+  }
+  
+  else{
+  
+    switch(voiceSample) {
+      case 0:
+      break;
+      
+      case 1:
+      sample1.trigger();
+      counter[1]++;
+      break;
+      
+      case 2:
+      sample2.trigger();
+      counter[2]++;
+      break;
+      
+      case 3:
+      sample3.trigger();
+      counter[3]++;
+      break;
+      
+      case 4:
+      sample4.trigger();
+      counter[4]++;
+      break;
+      
+      case 5:
+      sample5.trigger();
+      counter[5]++;
+      break;
+      
+      case 6:
+      sample6.trigger();
+      counter[6]++;
+      break;
+      
+      case 7:
+      sample7.trigger();
+      counter[7]++;
+      break;
+      
+      case 8:
+      sample8.trigger();
+      counter[8]++;
+      break;
+      
+      case 9:
+      sample9.trigger();
+      counter[9]++;
+      break;
+      
+    } 
+  }
+}
+
+void keyPressed(){
+    if(keyCode == RIGHT){
     voiceSample++;
+  }
+  
+  if(key== '1'){
+    step1.trigger();
+  }
+  
+  if(key == '2'){
+    step2.trigger();
   }
   
   if(keyCode == LEFT){
     voiceSample--;
   }
   
-  switch(voiceSample) {
-    case 0:
-    break;
-    
-    case 1:
-    sample1.trigger();
-    break;
-    
-    case 2:
-    sample1.trigger();
-    break;
-    
-    case 3:
-    sample3.trigger();
-    break;
-    
-  } 
+  if(key == 'r'){
+    resetPose();
+  }
+  
 }
 
 void playDoneSound(int index){
@@ -184,4 +239,13 @@ void playDoneSound(int index){
     case 1:
     sample1.trigger();
   }
+}
+
+void resetPose(){
+   step1done = false;
+   step2done = false;
+   step = 1;
+   step1spoken = false;
+   step2spoken = false;
+   voiceSample = 0;
 }

@@ -1,3 +1,4 @@
+
 /*
 Thomas Sanchez Lengeling.
  http://codigogenerativo.com/
@@ -19,10 +20,32 @@ String UIText = "click mouse to start";
 String instructions = "instructions";
 String ls = "-"; String rs="-"; String la = "-"; String ra="-";
 
+int counter[]  = {0,0,0,0,0,0,0,0,0,0};
+
 Minim minim;
 AudioSample sample1;
 AudioSample sample2;
 AudioSample sample3;
+AudioSample sample4;
+AudioSample sample5;
+AudioSample sample6;
+AudioSample sample7;
+AudioSample sample8;
+AudioSample sample9;
+
+AudioSample step0;
+AudioSample step1;
+AudioSample step2;
+
+static int leftKneeWrong = 1;
+static int rightKneeWrong = 2;
+static int bothShouldersWrong = 3;
+static int rightShoulderWrong = 4;
+static int leftShoulderWrong = 5;
+static int bothElbowsWrong = 6;
+static int rightElbowWrong = 7;
+static int leftElbowWrong = 8;
+static int allGood = 9;
 
 float AngleNeck;
 float AngleSpineTop;
@@ -37,6 +60,10 @@ float AngleRightHip;
 float AngleRightKnee;
 float AngleLeftHip;
 float AngleLeftKnee;
+float AngleRightShoulderWithY;
+float AngleRightElbowWithY;
+float AngleLeftShoulderWithY;
+float AngleLeftElbowWithY;
 
 
 void setup() {
@@ -58,7 +85,13 @@ void draw() {
   
   image(kinect.getColorImage(), 0, 0, width, height);
   
-  text(instructions, 1920-200,20);
+  pushMatrix();
+  translate(50,height-200);
+  fill(0,0,0,160);
+  rect(0,0, width, 40);
+  fill(255,255,255);
+  text(instructions, 0,20);
+  popMatrix();
   text(UIText, 1920 - 200, 50);
   text(ls, 1920 - 200, 80);
   text(la, 1920 - 200, 110);
@@ -88,7 +121,8 @@ void draw() {
   fill(255, 0, 0);
   text(frameRate, 50, 50);
   
-   beginExercise();
+   setFlagsPose1();
+   doPose();
 }
 
 //DRAW BODY
@@ -135,6 +169,20 @@ void drawBody(KJoint[] joints) {
   drawBone(joints, KinectPV2.JointType_AnkleRight, KinectPV2.JointType_FootRight);
   AngleRightHip = showAngle(joints,KinectPV2.JointType_SpineBase, KinectPV2.JointType_HipRight, KinectPV2.JointType_KneeRight,20,0);
   AngleRightKnee = showAngle(joints,KinectPV2.JointType_HipRight, KinectPV2.JointType_KneeRight, KinectPV2.JointType_FootRight,0,0);
+  
+  PVector YUpVector = new PVector(0.0,1.0,0.0);
+  
+  AngleRightShoulderWithY = calcAngleWithVectors(joints,KinectPV2.JointType_ShoulderRight, KinectPV2.JointType_ElbowRight, YUpVector); 
+  AngleLeftShoulderWithY = calcAngleWithVectors(joints,KinectPV2.JointType_ShoulderLeft, KinectPV2.JointType_ElbowLeft,  YUpVector);
+  AngleLeftElbowWithY = calcAngleWithVectors(joints,KinectPV2.JointType_ElbowLeft, KinectPV2.JointType_WristLeft,  YUpVector);
+  AngleRightElbowWithY = calcAngleWithVectors(joints,KinectPV2.JointType_ElbowRight, KinectPV2.JointType_WristRight,  YUpVector);
+  
+    
+  la = String.valueOf(AngleLeftKnee);
+  //ra = String.valueOf(AngleRightElbowWithY);
+  ls = String.valueOf(AngleLeftShoulderWithY);
+  rs = String.valueOf(AngleRightShoulderWithY);
+  
   
 
   // Left Leg
@@ -224,10 +272,29 @@ float showAngle(KJoint[] joints, int jointType1, int jointType2, int jointType3,
   return angle;
 }
 
+float calcAngleWithVectors(KJoint[] joints, int jointType1, int jointType2, PVector vector){
+  PVector v1 = new PVector(joints[jointType1].getX(), joints[jointType1].getY(), joints[jointType1].getZ());
+  PVector v2 = new PVector(joints[jointType2].getX(), joints[jointType2].getY(), joints[jointType2].getZ());
+  v2 = v2.sub(v1);
+  v2.normalize();
+  float angle = PVector.angleBetween(v2,vector)*180/PI;
+  angle = 180-angle;
+  return angle;
+}
+
 void setUpSoundFiles(){
   
   minim = new Minim(this);
-  sample1 = minim.loadSample("sample1.mp3");
-  sample2 = minim.loadSample("sample2.mp3");
-  sample3 = minim.loadSample("sample3.mp3");
+  sample1 = minim.loadSample("1.mp3");
+  sample2 = minim.loadSample("2.mp3");
+  sample3 = minim.loadSample("3.mp3");
+  sample4 = minim.loadSample("4.mp3");
+  sample5 = minim.loadSample("5.mp3");
+  sample6 = minim.loadSample("6.mp3");
+  sample7 = minim.loadSample("7.mp3");
+  sample8 = minim.loadSample("8.mp3");
+  sample9 = minim.loadSample("9.mp3");
+  
+  step1 = minim.loadSample("step1.mp3");
+  step2 = minim.loadSample("step2.mp3");
 }
